@@ -1,29 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from "next";
-import { z } from "zod";
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { z } from 'zod'
+import { catchAsync } from '../core/catchAsync'
 
 const helloSchema = z.object({
   name: z.string(),
-});
+})
 
-export const catchAsync = async (
-  fn: (req: NextApiRequest, res: NextApiResponse) => Promise<any>
-) => {
-  return async (req: NextApiRequest, res: NextApiResponse) => {
-    try {
-      fn(req, res);
-    } catch (error) {
-      res.status(500).json({ name: "Error" });
-    }
-  };
-};
-
-export default catchAsync(async (req: NextApiRequest, res: NextApiResponse) => {
+// Must not be async
+export default catchAsync(async (req, res) => {
   try {
-    const { name } = helloSchema.parse(req.body);
+    const { name } = helloSchema.parse(req?.body)
 
-    res.status(200).json({ name: name });
+    res.status(200).json({ name: name })
   } catch (error) {
-    res.status(400).json({ name: "Error" });
+    res.status(400).json({ name: 'Error' })
   }
-});
+})
